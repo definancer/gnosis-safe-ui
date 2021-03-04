@@ -43,10 +43,36 @@ For Rinkeby:
 yarn build
 ```
 
+
 For Mainnet:
 ```
 yarn build-mainnet
 ```
+
+### set Networks
+[safeContracts](./src/logic/contracts/safeContracts.ts)
+``` javascript
+/**
+ * Creates a Contract instance of the GnosisSafeProxyFactory contract
+ * @param {Web3} web3
+ * @param {ETHEREUM_NETWORK} networkId
+ */
+const getProxyFactoryContract = (web3: Web3, networkId: ETHEREUM_NETWORK): GnosisSafeProxyFactory => {
+  const networks = ProxyFactorySol.networks
+  // TODO: this may not be the most scalable approach,
+  //  but up until v1.2.0 the address is the same for all the networks.
+  //  So, if we can't find the network in the Contract artifact, we fallback to MAINNET.
+  const contractAddress = networks[networkId]?.address ?? networks[ETHEREUM_NETWORK.MAINNET].address
+  return (new web3.eth.Contract(ProxyFactorySol.abi as AbiItem[], contractAddress) as unknown) as GnosisSafeProxyFactory
+}
+```
+```
+export const SENTINEL_ADDRESS = '0x0000000000000000000000000000000000000001'
+export const MULTI_SEND_ADDRESS = '0x8d29be29923b68abfdd21e541b9374737b49cdad'
+export const SAFE_MASTER_COPY_ADDRESS = '0x34CfAC646f301356fAa8B21e94227e3583Fe3F5F'
+export const DEFAULT_FALLBACK_HANDLER_ADDRESS = '0xd5D82B6aDDc9027B22dCA772Aa68D5d74cdBdF44'
+export const SAFE_MASTER_COPY_ADDRESS_V10 = '0xb6029EA3B2c51D09a50B53CA8012FeEB05bDa35A'
+``` 
 
 
 ## Running the tests
